@@ -6,7 +6,8 @@ public class CollisionHandler : MonoBehaviour
 {
     private void OnCollisionEnter(Collision collision)
     {
-        print(gameObject + "hit");
+        HealthHandler health = GetComponentInParent<HealthHandler>();
+        health.ReduceHealth(health.GetHealth());
     }
 
     private void OnParticleCollision(GameObject other)

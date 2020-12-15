@@ -5,23 +5,27 @@ using UnityEngine;
 public class EnemyAI : MonoBehaviour
 {
     [SerializeField] float enemySpeed = 10f;
+    [SerializeField] float rotationalSpeead = 1f;
     [SerializeField] float maxEngagmentDistance = 20f;
     [SerializeField] GameObject[] guns;
 
-    PlayerHealth target;
+    FlightController target;
 
     // Start is called before the first frame update
     void Start()
     {
-        target = FindObjectOfType<PlayerHealth>();    
+        target = FindObjectOfType<FlightController>();    
     }
 
     // Update is called once per frame
     void Update()
     {
-        transform.LookAt(target.transform);
-        transform.Translate(0, 0, enemySpeed*Time.deltaTime);
-        ProcessShoot();
+        if (target)
+        {
+            RotateToTarget();
+            transform.Translate(0, 0, enemySpeed * Time.deltaTime);
+            ProcessShoot();
+        }
     }
 
     private void ProcessShoot()
@@ -43,5 +47,20 @@ public class EnemyAI : MonoBehaviour
             var emissionModule = gun.GetComponent<ParticleSystem>().emission;
             emissionModule.enabled = state;
         }
+    }
+
+    void RotateToTarget()
+    {
+        // Determine which direction to rotate towards
+        Vector3 targetDirection = target.transform.position - transform.position;
+
+        // Rotate the forward vector towards the target direction by one step
+        Vector3 newDirection = Vector3.RotateTowards(transform.forward, 
+                                                        targetDirection, 
+                                                        rotationalSpeead*Time.deltaTime, 
+                                                        0.0f);
+
+        // Calculate a rotation a step closer to the target and applies rotation to this object
+        transform.rotation = Quaternion.LookRotation(newDirection);
     }
 }

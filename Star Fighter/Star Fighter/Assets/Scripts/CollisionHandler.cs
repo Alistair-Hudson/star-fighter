@@ -4,14 +4,21 @@ using UnityEngine;
 
 public class CollisionHandler : MonoBehaviour
 {
+    HealthHandler health;
+    
+    private void Start()
+    {
+        health = GetComponentInParent<HealthHandler>();
+        
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
-        HealthHandler health = GetComponentInParent<HealthHandler>();
         health.ReduceHealth(health.GetHealth());
     }
 
     private void OnParticleCollision(GameObject other)
     {
-        print(gameObject + "hit by particles");
+        health.ReduceHealth(10);
     }
 }

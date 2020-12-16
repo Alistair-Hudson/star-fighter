@@ -21,6 +21,7 @@ public class FlightController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
     }
 
     private void OnDestroy()
@@ -31,6 +32,7 @@ public class FlightController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         transform.Translate(0, 0, flightSpeed * Time.deltaTime);
                 
         if (isControlEnabled)

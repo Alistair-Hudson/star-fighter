@@ -24,11 +24,6 @@ public class FlightController : MonoBehaviour
 
     }
 
-    private void OnDestroy()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-    }
-
     // Update is called once per frame
     void Update()
     {

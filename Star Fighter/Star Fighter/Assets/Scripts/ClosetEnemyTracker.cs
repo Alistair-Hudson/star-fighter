@@ -30,7 +30,7 @@ public class ClosetEnemyTracker : MonoBehaviour
         float angleY = GetAngleAroundY();
         float angleX = GetAngleAroundX();
         float angleZ = GetAngleAroundZ();
-        SetTargeting(angleY, angleX);
+        //SetTargeting(angleY, angleX);
         SetOnScreenTarget(angleZ);
 
         if (0 > angleY)
@@ -55,8 +55,9 @@ public class ClosetEnemyTracker : MonoBehaviour
 
     private void SetOnScreenTarget(float angleZ)
     {
-        onScreenTarget.rectTransform.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Right, 0, 100);
-        onScreenTarget.rectTransform.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, 0, 100);
+        onScreenTarget.rectTransform.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Right, (float)(Screen.width)/2, 100);
+
+        onScreenTarget.rectTransform.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, (float)(Screen.height)/2, 100);
     }
 
     private void SetTargeting(float angleY, float angleX)

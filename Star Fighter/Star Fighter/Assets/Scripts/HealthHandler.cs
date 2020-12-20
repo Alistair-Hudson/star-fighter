@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class HealthHandler : MonoBehaviour
 {
@@ -11,6 +12,12 @@ public class HealthHandler : MonoBehaviour
         health -= damage;
         if(0 >= health)
         {
+            if (GetComponent<FlightController>())
+            {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+                return;
+            }
+            FindObjectOfType<Score>().AddToScore(GetComponent<EnemyAI>().GetPointsValue());
             Destroy(gameObject);
         }
     }

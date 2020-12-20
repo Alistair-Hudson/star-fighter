@@ -7,6 +7,7 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] float enemySpeed = 10f;
     [SerializeField] float rotationalSpeead = 1f;
     [SerializeField] float maxEngagmentDistance = 20f;
+    [SerializeField] int points = 50;
     [SerializeField] GameObject[] guns;
 
     FlightController target;
@@ -26,6 +27,11 @@ public class EnemyAI : MonoBehaviour
             transform.Translate(0, 0, enemySpeed * Time.deltaTime);
             ProcessShoot();
         }
+    }
+
+    public int GetPointsValue()
+    {
+        return points;
     }
 
     private void ProcessShoot()

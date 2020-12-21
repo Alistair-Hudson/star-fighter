@@ -4823,7 +4823,7 @@ GameObject:
   m_Component:
   - component: {fileID: 94893664026643320}
   - component: {fileID: 94893664026643321}
-  - component: {fileID: 94893664026643323}
+  - component: {fileID: 4071928576445801996}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -4862,8 +4862,9 @@ MonoBehaviour:
   enemySpeed: 10
   rotationalSpeead: 1
   maxEngagmentDistance: 20
+  points: 50
   guns: []
---- !u!114 &94893664026643323
+--- !u!114 &4071928576445801996
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4872,7 +4873,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 94893664026643334}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ac73ab403036e7a42a4dfe39f4fcee3f, type: 3}
+  m_Script: {fileID: 11500000, guid: bd67b046e7e958c4f8ba1a6bd9a833e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   health: 100

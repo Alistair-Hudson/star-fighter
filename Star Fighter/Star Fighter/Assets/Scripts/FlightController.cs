@@ -16,6 +16,7 @@ public class FlightController : MonoBehaviour
     //Constants
     string HORIZONTAL_AXIS = "Horizontal";
     string VERTICAL_AXIS = "Vertical";
+    string YAW = "Yaw";
     string SHOOT = "Fire1";
 
     // Start is called before the first frame update
@@ -34,6 +35,7 @@ public class FlightController : MonoBehaviour
         {
             ProcessPitch();
             ProcessRoll();
+            ProcessYaw();
             ProcessShoot();
         }
     }
@@ -74,5 +76,11 @@ public class FlightController : MonoBehaviour
     {
         float pitch = CrossPlatformInputManager.GetAxis(VERTICAL_AXIS);
         transform.Rotate(pitch, 0, 0);
+    }
+
+    private void ProcessYaw()
+    {
+        float yaw = CrossPlatformInputManager.GetAxis(YAW);
+        transform.Rotate(0, yaw, 0);
     }
 }

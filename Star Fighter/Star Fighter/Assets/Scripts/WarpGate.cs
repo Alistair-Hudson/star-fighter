@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class WarpGate : MonoBehaviour
 {
@@ -11,7 +10,7 @@ public class WarpGate : MonoBehaviour
         if (other.GetComponentInParent<FlightController>())
         {
             FindObjectOfType<Score>().EnterWarpGate();
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
+            FindObjectOfType<SceneHandler>().LoadPreviousScene();
         }
     }
 }

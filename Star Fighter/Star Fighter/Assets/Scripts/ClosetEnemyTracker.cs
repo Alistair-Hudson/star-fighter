@@ -6,17 +6,20 @@ using UnityEngine.UI;
 
 public class ClosetEnemyTracker : MonoBehaviour
 {
-    [SerializeField] RawImage offScreenTarget;
-    [SerializeField] RawImage onScreenTarget;
+    [SerializeField] RawImage targetLocator;
 
     EnemyAI target;
     FlightController player;
     float offScreenAngle;
+    Camera playerView;
+
+    float TARGETOR_SIZE = 50;
 
     private void Start()
     {
         player = FindObjectOfType<FlightController>();
         offScreenAngle = Camera.main.fieldOfView;
+        playerView = Camera.main;
     }
 
     // Update is called once per frame
@@ -26,77 +29,20 @@ public class ClosetEnemyTracker : MonoBehaviour
         {
             target = GetClosestEnemy();
         }
-
-        float angleY = GetAngleAroundY();
-        float angleX = GetAngleAroundX();
-        float angleZ = GetAngleAroundZ();
-        //SetTargeting(angleY, angleX);
-        SetOnScreenTarget(angleZ);
-
-        if (0 > angleY)
-        {
-            offScreenTarget.rectTransform.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Right, 0, 100);
-        }
-        else
-        {
-            offScreenTarget.rectTransform.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, 0, 100);
-        }
-
-        if (0 > angleX)
-        {
-            offScreenTarget.rectTransform.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Bottom, 0, 100);
-        }
-        else
-        {
-            offScreenTarget.rectTransform.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, 0, 100);
-        }
+        SetTargetLocator();
 
     }
 
-    private void SetOnScreenTarget(float angleZ)
+    private void SetTargetLocator()//needs to be tuned
     {
-        onScreenTarget.rectTransform.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Right, (float)(Screen.width)/2, 100);
+        Vector2 screenPoint = new Vector2(  playerView.WorldToScreenPoint(target.transform.position).x,
+                                            playerView.WorldToScreenPoint(target.transform.position).y);
 
-        onScreenTarget.rectTransform.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, (float)(Screen.height)/2, 100);
-    }
+        //screenPoint.x = OffScreenCorrection(GetAngleAroundY(), Screen.width, screenPoint.x);
+        //screenPoint.y = OffScreenCorrection(GetAngleAroundX(), Screen.height, screenPoint.y);
 
-    private void SetTargeting(float angleY, float angleX)
-    {
-        if (offScreenAngle <= angleY || -offScreenAngle >= angleY ||
-            offScreenAngle <= angleX || -offScreenAngle >= angleX)
-        {
-            offScreenTarget.enabled = true;
-            onScreenTarget.enabled = false;
-        }
-        else
-        {
-            offScreenTarget.enabled = false;
-            onScreenTarget.enabled = true;
-        }
-    }
-
-    private float GetAngleAroundY()
-    {
-        Vector3 targetdir = target.transform.position - player.transform.position;
-        Vector3 forward = player.transform.forward;
-        return Vector3.SignedAngle(targetdir, forward, Vector3.up);
-        
-    }
-
-    private float GetAngleAroundX()
-    {
-        Vector3 targetdir = target.transform.position - player.transform.position;
-        Vector3 forward = player.transform.forward;
-        return Vector3.SignedAngle(targetdir, forward, Vector3.right);
-
-    }
-
-    private float GetAngleAroundZ()
-    {
-        Vector3 targetdir = target.transform.position - player.transform.position;
-        Vector3 right = player.transform.right;
-        return Vector3.SignedAngle(targetdir, right, Vector3.forward);
-
+        targetLocator.rectTransform.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, screenPoint.x, TARGETOR_SIZE);
+        targetLocator.rectTransform.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Bottom, screenPoint.y, TARGETOR_SIZE);
     }
 
     private EnemyAI GetClosestEnemy()
@@ -114,5 +60,34 @@ public class ClosetEnemyTracker : MonoBehaviour
         }
 
         return target;
+    }
+    private float OffScreenCorrection(float angle, float screenSize, float currentScreenPoint)
+    {
+        if (-offScreenAngle >=  angle)
+        {
+            return 0;
+        }
+        if (offScreenAngle <= angle)
+        {
+            return screenSize;
+        }
+        return currentScreenPoint;
+
+    }
+
+    private float GetAngleAroundY()
+    {
+        Vector3 targetdir = target.transform.position - player.transform.position;
+        Vector3 forward = player.transform.forward;
+        return Vector3.SignedAngle(targetdir, forward, Vector3.up);
+
+    }
+
+    private float GetAngleAroundX()
+    {
+        Vector3 targetdir = target.transform.position - player.transform.position;
+        Vector3 forward = player.transform.forward;
+        return Vector3.SignedAngle(targetdir, forward, Vector3.right);
+
     }
 }

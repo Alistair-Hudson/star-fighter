@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
 {
-    [SerializeField] EnemyAI[] enemyPreabs;
+    [SerializeField] EnemyAI[] enemyPrefabs;
     [SerializeField] int initialSpawnNum = 5;
-    [SerializeField] int difficultyLevel = 0;
+    [SerializeField] int difficultyLevel = 1;
+    [SerializeField] float spawnDelay = 20f;
 
     [SerializeField] float maxAreaSize = 500f;
     [SerializeField] int maxNumEnemies = 10;
@@ -14,7 +15,13 @@ public class EnemySpawner : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        difficultyLevel = FindObjectOfType<Score>().GetWarpRuns();
+        initialSpawnNum *= (FindObjectOfType<Score>().GetWarpRuns() + 1);
+        maxNumEnemies *= (FindObjectOfType<Score>().GetWarpRuns() + 1);
+        spawnDelay /= (FindObjectOfType<Score>().GetWarpRuns() + 1);
+
         SpawnInitialEnemies();
+        StartCoroutine(SpawningLoop());
     }
 
     private void SpawnInitialEnemies()
@@ -31,20 +38,25 @@ public class EnemySpawner : MonoBehaviour
         {
             return;
         }
-
-        EnemyAI enemy = Instantiate(enemyPreabs[Random.Range(0, difficultyLevel)],
+        int spawnRange = difficultyLevel <= enemyPrefabs.Length ? difficultyLevel : enemyPrefabs.Length;
+        EnemyAI enemy = Instantiate(enemyPrefabs[Random.Range(0, spawnRange)],
                                                 new Vector3(Random.Range(-maxAreaSize, maxAreaSize),
                                                             Random.Range(-maxAreaSize, maxAreaSize),
                                                             Random.Range(-maxAreaSize, maxAreaSize)),
                                                 Quaternion.identity);
-        enemy.transform.parent = gameObject.transform;
+        enemy.transform.SetParent(transform);
+        
 
         --maxNumEnemies;
     }
 
-    // Update is called once per frame
-    void Update()
+    IEnumerator SpawningLoop()
     {
-        SpawnEnemy();
+        while (0 <= maxNumEnemies)
+        {
+            SpawnEnemy();
+            yield return new WaitForSeconds(spawnDelay);
+        }
     }
+
 }

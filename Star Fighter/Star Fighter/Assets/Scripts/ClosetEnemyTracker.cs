@@ -6,12 +6,11 @@ using UnityEngine.UI;
 
 public class ClosetEnemyTracker : MonoBehaviour
 {
-    [SerializeField] RawImage targetLocator;
-
     EnemyAI target;
     FlightController player;
     float offScreenAngle;
     Camera playerView;
+    RectTransform position;
 
     float TARGETOR_SIZE = 50;
 
@@ -20,6 +19,7 @@ public class ClosetEnemyTracker : MonoBehaviour
         player = FindObjectOfType<FlightController>();
         offScreenAngle = Camera.main.fieldOfView;
         playerView = Camera.main;
+        position = GetComponent<RectTransform>();
     }
 
     // Update is called once per frame
@@ -28,6 +28,7 @@ public class ClosetEnemyTracker : MonoBehaviour
         if (!target)
         {
             target = GetClosestEnemy();
+            return;
         }
         SetTargetLocator();
 
@@ -38,18 +39,22 @@ public class ClosetEnemyTracker : MonoBehaviour
         Vector2 screenPoint = new Vector2(  playerView.WorldToScreenPoint(target.transform.position).x,
                                             playerView.WorldToScreenPoint(target.transform.position).y);
 
-        //screenPoint.x = OffScreenCorrection(GetAngleAroundY(), Screen.width, screenPoint.x);
-        //screenPoint.y = OffScreenCorrection(GetAngleAroundX(), Screen.height, screenPoint.y);
+        screenPoint.x = OffScreenCorrection(GetAngleAroundY(), Screen.width, screenPoint.x);
+        screenPoint.y = OffScreenCorrection(GetAngleAroundX(), Screen.height, screenPoint.y);
 
-        targetLocator.rectTransform.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, screenPoint.x, TARGETOR_SIZE);
-        targetLocator.rectTransform.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Bottom, screenPoint.y, TARGETOR_SIZE);
+        position.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, screenPoint.x, TARGETOR_SIZE);
+        position.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Bottom, screenPoint.y, TARGETOR_SIZE);
     }
 
     private EnemyAI GetClosestEnemy()
     {
         EnemyAI[] enemies = FindObjectsOfType<EnemyAI>();
         EnemyAI target = enemies[0];
-
+        if (!target)
+        {
+            GetComponent<Image>().enabled = false;
+            return null;
+        }
         foreach (EnemyAI enemy in enemies)
         {
             if (Vector3.Distance(enemy.transform.position, player.transform.position) < 
@@ -61,6 +66,7 @@ public class ClosetEnemyTracker : MonoBehaviour
 
         return target;
     }
+
     private float OffScreenCorrection(float angle, float screenSize, float currentScreenPoint)
     {
         if (-offScreenAngle >=  angle)
